@@ -1,0 +1,18 @@
+base_url: "https://restful-booker.herokuapp.com"
+
+env:
+  dev:
+    base_url: "https://restful-booker.herokuapp.com"
+  staging:
+    base_url: "https://staging-api.example.com"
+  prod:
+    base_url: "https://api.example.com"
+
+auth:
+  username: "admin"
+  password: "password123"
+
+timeout: 30
+
+logging:
+  level: "INFO"
