@@ -1,6 +1,7 @@
 """HTTP 客户端封装"""
+import allure
 import requests
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 from core.logger import get_logger
 
 
@@ -39,7 +40,11 @@ class HTTPClient:
         headers = self._get_headers(headers)
         
         self.logger.info(f"{method} {url}")
-        
+
+        # 记录请求到 Allure
+        req_info = f"{method} {url}\nHeaders: {headers}\nBody: {json}"
+        allure.attach(req_info, name="Request", attachment_type=allure.attachment_type.TEXT)
+
         resp = self.session.request(
             method=method,
             url=url,
@@ -50,8 +55,12 @@ class HTTPClient:
             timeout=self.timeout,
             **kwargs
         )
-        
-        self.logger.info(f"Status: {resp.status_code}")
+
+        self.logger.info(f"Response Status: {resp.status_code}")
+
+        # 记录响应到 Allure
+        resp_info = f"Status: {resp.status_code}\nBody: {resp.text}"
+        allure.attach(resp_info, name="Response", attachment_type=allure.attachment_type.TEXT)
         return resp
     
     def get(self, path: str, **kwargs) -> requests.Response:
