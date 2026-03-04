@@ -27,9 +27,17 @@ pip install -r requirements.txt
 # 2. 运行测试
 pytest
 
-# 3. 生成报告（需要安装 allure）
+# 3. 使用allure（需要安装 allure）
+# 3.1 生成报告
 pytest --alluredir=reports/allure
+# 3.2 启动本地服务器查看报告
 allure serve reports/allure
+
+# 4. 直接html查看简单版本报告
+# 4.1 生成报告
+pytest --html=reports/report.html
+# 4.2 文件形式查看报告
+open report.html
 ```
 
 ## 环境

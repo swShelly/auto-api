@@ -123,4 +123,4 @@ class TestHealth:
         """Ping 接口"""
         resp = http_client.get("/ping")
         assert resp.status_code == 201
-        assert "Created" in resp.json().get("message", "")
+        assert resp.text == "Created"
