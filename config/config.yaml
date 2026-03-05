@@ -8,6 +8,11 @@ env:
   prod:
     base_url: "https://api.example.com"
 
+# Stripe 测试环境
+stripe:
+  base_url: "https://api.stripe.com/v1"
+  api_key: "sk_test_4eC39HqLyjWDarjtT1zdp7dc"  # Stripe 公开测试密钥
+
 auth:
   username: "admin"
   password: "password123"

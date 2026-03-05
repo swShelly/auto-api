@@ -60,3 +60,21 @@ def auth_manager(http_client, config):
 def token(auth_manager):
     """获取 Token（Session 级，整个测试周期复用）"""
     return auth_manager.get_token()
+
+
+# ========== Stripe 测试 Fixtures ==========
+
+@pytest.fixture(scope="session")
+def stripe_client(config):
+    """Stripe HTTP 客户端"""
+    stripe_cfg = config.get("stripe", {})
+    return HTTPClient(
+        base_url=stripe_cfg.get("base_url", "https://api.stripe.com/v1"),
+        timeout=config.get("timeout", 30)
+    )
+
+
+@pytest.fixture(scope="session")
+def stripe_api_key(config):
+    """Stripe API Key"""
+    return config.get("stripe", {}).get("api_key", "")
