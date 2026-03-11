@@ -24,9 +24,8 @@ ignore = [
     "B008",  # 函数默认参数不要执行
 ]
 
-# 修复规则
-[lint.fixable]
-all = true
+# 可自动修复的规则（ALL = 所有可修复规则）
+fixable = ["ALL"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]
