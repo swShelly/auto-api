@@ -1,7 +1,6 @@
 """Restful-Booker 接口测试"""
 
 
-
 class TestBooking:
     """Booking 接口测试"""
 

@@ -1,6 +1,5 @@
 """HTTP 客户端封装"""
 
-
 import allure
 import requests
 
