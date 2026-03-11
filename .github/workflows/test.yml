@@ -1,4 +1,4 @@
-name: 接口自动化测试
+name: 接口自动化测试 + 代码质量检查
 
 # 触发条件
 on:
@@ -9,38 +9,72 @@ on:
 
 # 工作流
 jobs:
-  test:
-    runs-on: ubuntu-latest  # 运行环境
+  # 代码质量检查
+  lint:
+    runs-on: ubuntu-latest
     
     steps:
-      # 1. 拉取代码
       - name: 拉取代码
         uses: actions/checkout@v4
       
-      # 2. 设置 Python 环境
       - name: 设置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       
-      # 3. 安装依赖
+      - name: 安装 ruff
+        run: pip install ruff
+      
+      - name: 运行 Lint 检查
+        run: ruff check .
+      
+      - name: 运行代码格式化检查
+        run: ruff format --check .
+
+  # 类型检查
+  type-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 安装 mypy
+        run: pip install mypy types-requests
+      
+      - name: 运行类型检查
+        run: mypy .
+        continue-on-error: true  # 类型检查失败不阻止合并
+
+  # 测试
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
       - name: 安装依赖
         run: |
           pip install -r requirements.txt
           pip install pytest allure-pytest
       
-      # 4. 运行测试
       - name: 运行测试
         run: pytest -v --tb=short
       
-      # 5. 上传测试报告（失败时）
-      - name: 上传测试报告
+      - name: 上传测试报告（失败时）
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: reports/
-      
-      # 6. 运行 Stripe 测试（可选）
-      - name: 运行 Stripe 测试
-        run: pytest -v testcases/test_stripe.py || echo "Stripe tests skipped"
