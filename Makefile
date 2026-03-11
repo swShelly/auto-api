@@ -17,10 +17,10 @@ install:
 	pip install -r requirements.txt
 
 lint:
-	ruff check .
+	python -m ruff check .
 
 format:
-	ruff format .
+	python -m ruff format .
 
 check: lint test
 	mypy .
