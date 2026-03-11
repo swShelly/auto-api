@@ -1,4 +1,4 @@
-name: 接口自动化测试 + 代码质量检查
+name: 接口自动化测试 + 代码质量检查 + 安全扫描
 
 # 触发条件
 on:
@@ -30,6 +30,26 @@ jobs:
       
       - name: 运行代码格式化检查
         run: ruff format --check .
+
+  # 安全扫描
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 安装 Bandit
+        run: pip install bandit
+      
+      - name: 运行安全扫描
+        run: bandit -r . -x ./tests,./venv
+        continue-on-error: true
 
   # 类型检查
   type-check:
