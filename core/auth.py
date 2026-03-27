@@ -1,7 +1,5 @@
 """鉴权管理"""
 
-from typing import Optional
-
 from core.http_client import HTTPClient
 from core.logger import get_logger
 
@@ -13,7 +11,7 @@ class AuthManager:
         self.client = http_client
         self.username = username
         self.password = password
-        self.token: Optional[str] = None
+        self.token: str | None = None
         self.logger = get_logger(__name__)
 
     def login(self) -> str:
