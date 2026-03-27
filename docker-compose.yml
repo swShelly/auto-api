@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Staging 环境
+  app-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auto-api-staging
+    ports:
+      - "8001:8000"
+    environment:
+      - ENV=staging
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs/staging:/app/logs
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Production 环境
+  app-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auto-api-production
+    ports:
+      - "8002:8000"
+    environment:
+      - ENV=production
+      - LOG_LEVEL=WARNING
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs/production:/app/logs
+    networks:
+      - app-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # 监控：Prometheus（可选）
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - app-network
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  # 监控：Grafana（可选）
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - app-network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -30,7 +30,7 @@ class AuthManager:
         """获取 Token（缓存机制）"""
         if not self.token or force_refresh:
             self.login()
-        return self.token
+        return self.token or ""
 
     def get_auth_headers(self) -> dict:
         """获取带鉴权的 Header"""
