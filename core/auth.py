@@ -1,5 +1,7 @@
 """鉴权管理"""
 
+from typing import Optional
+
 from core.http_client import HTTPClient
 from core.logger import get_logger
 
@@ -11,7 +13,7 @@ class AuthManager:
         self.client = http_client
         self.username = username
         self.password = password
-        self.token: str | None = None
+        self.token: Optional[str] = None
         self.logger = get_logger(__name__)
 
     def login(self) -> str:
@@ -30,7 +32,7 @@ class AuthManager:
         """获取 Token（缓存机制）"""
         if not self.token or force_refresh:
             self.login()
-        return self.token
+        return self.token or ""
 
     def get_auth_headers(self) -> dict:
         """获取带鉴权的 Header"""

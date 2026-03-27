@@ -1,5 +1,7 @@
 """HTTP 客户端封装"""
 
+from typing import Optional
+
 import allure
 import requests
 
@@ -19,7 +21,7 @@ class HTTPClient:
         """构建完整 URL"""
         return f"{self.base_url}/{path.lstrip('/')}"
 
-    def _get_headers(self, headers: dict | None = None) -> dict:
+    def _get_headers(self, headers: Optional[dict] = None) -> dict:
         """合并默认 Header"""
         default = {"Content-Type": "application/json"}
         if headers:
@@ -30,10 +32,10 @@ class HTTPClient:
         self,
         method: str,
         path: str,
-        params: dict | None = None,
-        data: dict | None = None,
-        json: dict | None = None,
-        headers: dict | None = None,
+        params: Optional[dict] = None,
+        data: Optional[dict] = None,
+        json: Optional[dict] = None,
+        headers: Optional[dict] = None,
         **kwargs,
     ) -> requests.Response:
         """统一请求入口"""
